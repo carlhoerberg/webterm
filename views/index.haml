@@ -1,0 +1,41 @@
+%h1 WebTerm
+%fieldset
+  %legend Connect
+  %form#connect{:method=>:post}
+    %p
+      %input#host{:placeholder=>'Host'}
+    %p
+      %input#user{:placeholder=>'Username'}
+    %p
+      %input#passwd{:type=>:password, :placeholder=>'Password'}
+    %p
+      %input{:type=>:submit, :value => 'Connect'}
+
+#terminal
+
+
+%input#prompt
+
+:javascript
+  var client = new Faye.Client('/faye', { timeout: 60 });
+  function getParams() {
+      var host = $("#host").val();
+      var user = $("#user").val();
+      var passwd = $("#passwd").val();
+      return '/' + host + '/' + user + '/' + passwd;
+  }
+  $(function() {
+    $("#connect").submit(function() {
+      client.subscribe(url, function(msg) { 
+        $("#term").append(msg + '<br/>');
+      });
+      $(this).slideUp();
+      return false;
+    });
+    $("#prompt").change(function() {
+      var cmd = $(this).val();
+      client.publish('/to' + getParams(), cmd);
+    });
+    
+  });
+
