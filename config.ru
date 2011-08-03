@@ -8,6 +8,5 @@ map '/faye' do
 	adapter = Faye::RackAdapter, :mount => '', :timeout => 45
 
 	$faye = adapter.get_client
-	$faye.subscribe(
 	run adapter
 end
